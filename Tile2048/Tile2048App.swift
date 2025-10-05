@@ -6,12 +6,18 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 @main
 struct Tile2048App: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            GridView(
+                store: Store(initialState: GridFeature.State()) {
+                    GridFeature()
+                }
+            )
+            // ContentView()
         }
     }
 }
