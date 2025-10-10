@@ -17,7 +17,6 @@ struct Tile2048App: App {
                     GridFeature()
                 }
             )
-            // ContentView()
         }
     }
 }

@@ -13,7 +13,6 @@ struct GridView: View {
 
     var body: some View {
         VStack {
-            Text("\(store.state.board)")
             Button("up") { store.send(.swipeUp) }
             Button("down") { store.send(.swipeDown) }
             Button("left") { store.send(.swipeLeft) }
