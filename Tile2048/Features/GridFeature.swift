@@ -43,13 +43,9 @@ struct GridFeature {
                 return .send(.addRandomTile)
 
             case .addRandomTile:
-                let emptyPositions = BoardLogic.findEmptyPositions(state.board)
-                guard !emptyPositions.isEmpty else { return .none }
-
-                let randomIndex = Int.random(in: 0..<emptyPositions.count)
-                let position = emptyPositions[randomIndex]
-
-                return .send(.tileAdded(row: position.row, col: position.col, value: 2))
+                let pos = BoardLogic.findEmptyPosition(state.board)
+                guard let pos else { return .none }
+                return .send(.tileAdded(row: pos.row, col: pos.col, value: 2))
 
             case let .tileAdded(row, col, value):
                 state.board.cells[row][col] = value

@@ -6,14 +6,14 @@
 //
 
 enum BoardLogic {
-    static func findEmptyPositions(_ board: Board) -> [(row: Int, col: Int)] {
-        var positions: [(row: Int, col: Int)] = []
+    static func findEmptyPosition(_ board: Board) -> (row: Int, col: Int)? {
+        var positions: [(Int, Int)] = []
         for row in 0..<board.size {
             for col in 0..<board.size where board.cells[row][col] == nil {
                 positions.append((row, col))
             }
         }
-        return positions
+        return positions.randomElement()
     }
 
     static func move(_ board: Board, direction: Direction) -> Board {
