@@ -6,6 +6,7 @@
 //
 
 enum BoardLogic {
+
     static func findEmptyPosition(_ board: Board) -> (row: Int, col: Int)? {
         var positions: [(Int, Int)] = []
         for row in 0..<board.size {
@@ -70,4 +71,5 @@ enum BoardLogic {
         }
         return merged
     }
+
 }
