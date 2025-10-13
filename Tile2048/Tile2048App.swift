@@ -12,9 +12,9 @@ import ComposableArchitecture
 struct Tile2048App: App {
     var body: some Scene {
         WindowGroup {
-            GridView(
-                store: Store(initialState: GridFeature.State()) {
-                    GridFeature()
+            BoardView(
+                store: Store(initialState: BoardFeature.State()) {
+                    BoardFeature()
                 }
             )
         }

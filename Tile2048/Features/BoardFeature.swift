@@ -1,5 +1,5 @@
 //
-//  GridFeature.swift
+//  BoardFeature.swift
 //  Tile2048
 //
 //  Created by 이상수 on 10/5/25.
@@ -8,7 +8,7 @@
 import ComposableArchitecture
 
 @Reducer
-struct GridFeature {
+struct BoardFeature {
     @ObservableState
     struct State: Equatable {
         var board = Board(size: 4)
