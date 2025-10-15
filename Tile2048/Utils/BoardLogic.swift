@@ -5,6 +5,8 @@
 //  Created by 이상수 on 10/10/25.
 //
 
+import Foundation
+
 enum BoardLogic {
 
     static func findEmptyPosition(_ board: Board) -> (row: Int, col: Int)? {
@@ -70,6 +72,17 @@ enum BoardLogic {
             merged.append(nil)
         }
         return merged
+    }
+
+    static func determineDirection(_ translation: CGSize) -> Direction {
+        let horizontal = abs(translation.width)
+        let vertical = abs(translation.height)
+
+        if horizontal > vertical {
+            return translation.width > 0 ? .right : .left
+        } else {
+            return translation.height > 0 ? .down : .up
+        }
     }
 
 }

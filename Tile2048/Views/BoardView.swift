@@ -13,45 +13,26 @@ struct BoardView: View {
     let store: StoreOf<BoardFeature>
 
     var body: some View {
-        board
+        board(size: store.board.size)
             .gesture(
                 DragGesture(minimumDistance: 20)
                     .onEnded { gesture in
-                        handleSwipe(gesture)
+                        store.send(.swipe(gesture.translation))
                     }
             )
     }
 
-    private var board: some View {
+    private func board(size: Int) -> some View {
         LazyVGrid(
-            columns: Array(repeating: GridItem(.flexible()), count: 4)
+            columns: Array(repeating: GridItem(.flexible()), count: size)
         ) {
-            ForEach(0..<16) {
-                TileView(value: store.board.cells[$0 / 4][$0 % 4])
+            ForEach(0..<(size * size), id: \.self) {
+                TileView(value: store.board.cells[$0 / size][$0 % size])
             }
         }
         .padding(8)
         .background(Color.gray.opacity(0.3))
         .cornerRadius(8)
-    }
-
-    private func handleSwipe(_ gesture: DragGesture.Value) {
-        let horizontal = abs(gesture.translation.width)
-        let vertical = abs(gesture.translation.height)
-
-        if horizontal > vertical {
-            if gesture.translation.width > 0 {
-                store.send(.swipeRight)
-            } else {
-                store.send(.swipeLeft)
-            }
-        } else {
-            if gesture.translation.height > 0 {
-                store.send(.swipeDown)
-            } else {
-                store.send(.swipeUp)
-            }
-        }
     }
 
 }

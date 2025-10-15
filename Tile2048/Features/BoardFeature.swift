@@ -5,20 +5,18 @@
 //  Created by 이상수 on 10/5/25.
 //
 
+import Foundation
 import ComposableArchitecture
 
 @Reducer
 struct BoardFeature {
     @ObservableState
     struct State: Equatable {
-        var board = Board(size: 4)
+        var board: Board
     }
 
     enum Action {
-        case swipeUp
-        case swipeDown
-        case swipeLeft
-        case swipeRight
+        case swipe(CGSize)
         case addRandomTile
         case tileAdded(row: Int, col: Int, value: Int)
     }
@@ -26,25 +24,15 @@ struct BoardFeature {
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
-            case .swipeUp:
-                state.board = BoardLogic.move(state.board, direction: .up)
-                return .send(.addRandomTile)
-
-            case .swipeDown:
-                state.board = BoardLogic.move(state.board, direction: .down)
-                return .send(.addRandomTile)
-
-            case .swipeLeft:
-                state.board = BoardLogic.move(state.board, direction: .left)
-                return .send(.addRandomTile)
-
-            case .swipeRight:
-                state.board = BoardLogic.move(state.board, direction: .right)
+            case let .swipe(translation):
+                let direction = BoardLogic.determineDirection(translation)
+                state.board = BoardLogic.move(state.board, direction: direction)
                 return .send(.addRandomTile)
 
             case .addRandomTile:
-                let pos = BoardLogic.findEmptyPosition(state.board)
-                guard let pos else { return .none }
+                guard let pos = BoardLogic.findEmptyPosition(state.board) else {
+                    return .none
+                }
                 return .send(.tileAdded(row: pos.row, col: pos.col, value: 2))
 
             case let .tileAdded(row, col, value):
@@ -53,6 +41,7 @@ struct BoardFeature {
             }
         }
     }
+
 }
 
 enum Direction {
