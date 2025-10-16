@@ -7,16 +7,18 @@
 
 import Foundation
 import ComposableArchitecture
+import SwiftUI
 
 @Reducer
 struct BoardFeature {
+
     @ObservableState
     struct State: Equatable {
         var board: Board
     }
 
     enum Action {
-        case swipe(CGSize)
+        case swiped(Direction)
         case addRandomTile
         case tileAdded(row: Int, col: Int, value: Int)
     }
@@ -24,15 +26,16 @@ struct BoardFeature {
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
-            case let .swipe(translation):
-                let direction = BoardLogic.determineDirection(translation)
+            case let .swiped(direction):
                 state.board = BoardLogic.move(state.board, direction: direction)
                 return .send(.addRandomTile)
 
             case .addRandomTile:
-                guard let pos = BoardLogic.findEmptyPosition(state.board) else {
-                    return .none
-                }
+                let empties = BoardLogic.emptyPositions(state.board)
+                guard !empties.isEmpty else { return .none }
+                @Dependency(\.randomClient) var randomClient
+                let index = randomClient.randomIndex(empties.count)
+                let pos = empties[index]
                 return .send(.tileAdded(row: pos.row, col: pos.col, value: 2))
 
             case let .tileAdded(row, col, value):
@@ -42,8 +45,4 @@ struct BoardFeature {
         }
     }
 
-}
-
-enum Direction {
-    case up, down, left, right
 }

@@ -17,7 +17,8 @@ struct BoardView: View {
             .gesture(
                 DragGesture(minimumDistance: 20)
                     .onEnded { gesture in
-                        store.send(.swipe(gesture.translation))
+                        let direction = BoardLogic.determineDirection(gesture.translation)
+                        store.send(.swiped(direction))
                     }
             )
     }

@@ -9,9 +9,9 @@ import Foundation
 
 struct Board: Equatable {
     var cells: [[Int?]]
-    let size: Int
+    var size: Int
 
-    init(size: Int = 4) {
+    init(size: Int) {
         self.size = size
         cells = Array(repeating: Array(repeating: nil, count: size), count: size)
     }
