@@ -7,14 +7,13 @@
 
 import Foundation
 import ComposableArchitecture
-import SwiftUI
 
 @Reducer
 struct BoardFeature {
-
     @ObservableState
     struct State: Equatable {
         var board: Board
+        var score: Int = 0
     }
 
     enum Action {
@@ -27,7 +26,9 @@ struct BoardFeature {
         Reduce { state, action in
             switch action {
             case let .swiped(direction):
-                state.board = BoardLogic.move(state.board, direction: direction)
+                let result = BoardLogic.move(state.board, direction: direction)
+                state.board = result.board
+                state.score += result.scoreDelta
                 return .send(.addRandomTile)
 
             case .addRandomTile:
@@ -44,5 +45,4 @@ struct BoardFeature {
             }
         }
     }
-
 }

@@ -9,18 +9,35 @@ import SwiftUI
 import ComposableArchitecture
 
 struct BoardView: View {
-
     let store: StoreOf<BoardFeature>
 
     var body: some View {
-        board(size: store.board.size)
-            .gesture(
-                DragGesture(minimumDistance: 20)
-                    .onEnded { gesture in
-                        let direction = BoardLogic.determineDirection(gesture.translation)
-                        store.send(.swiped(direction))
-                    }
-            )
+        VStack {
+            scoreBoard
+            board(size: store.board.size)
+                .gesture(
+                    DragGesture(minimumDistance: 20)
+                        .onEnded { gesture in
+                            let direction = BoardLogic.determineDirection(gesture.translation)
+                            store.send(.swiped(direction))
+                        }
+                )
+        }
+    }
+
+    private var scoreBoard: some View {
+        VStack(spacing: 4) {
+            Text("SCORE")
+                .font(.caption)
+                .foregroundColor(.primary)
+
+            Text("\(store.score)")
+                .font(.system(size: 24, weight: .bold))
+                .foregroundColor(.primary)
+        }
+        .frame(width: 100, height: 70)
+        .background(Color.gray.opacity(0.3))
+        .cornerRadius(8)
     }
 
     private func board(size: Int) -> some View {
@@ -35,5 +52,4 @@ struct BoardView: View {
         .background(Color.gray.opacity(0.3))
         .cornerRadius(8)
     }
-
 }
