@@ -12,14 +12,12 @@ struct TileView: View {
 
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 4)
-                .fill(.gray.opacity(0.3))
+            RoundedRectangle(cornerRadius: 8)
+                .fill(TileColor.background(for: value))
 
             if let value {
                 Text("\(value)")
-                    .font(.title3)
-                    .bold()
-                    .foregroundColor(.white)
+                    .font(.title3.bold())
             }
         }
         .aspectRatio(1, contentMode: .fit)

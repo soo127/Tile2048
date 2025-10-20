@@ -5,7 +5,7 @@
 //  Created by 이상수 on 10/10/25.
 //
 
-import Foundation
+import SwiftUI
 
 enum BoardLogic {
     static func emptyPositions(_ board: Board) -> [(row: Int, col: Int)] {
