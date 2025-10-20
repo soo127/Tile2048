@@ -44,8 +44,9 @@ struct BoardView: View {
                 .foregroundColor(.primary)
 
             Text("\(store.score)")
-                .font(.system(size: 24, weight: .bold))
+                .font(.system(size: 22, weight: .semibold))
                 .foregroundColor(.primary)
+                .minimumScaleFactor(0.5)
         }
         .frame(width: 90, height: 60)
         .background(Color.gray.opacity(0.3))

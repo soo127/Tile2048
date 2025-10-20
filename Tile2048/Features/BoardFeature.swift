@@ -58,6 +58,6 @@ struct BoardFeature {
 extension BoardFeature.State {
     static let mock = BoardFeature.State(
         board: Board(size: 4),
-        score: 123400
+        score: 1234
     )
 }
