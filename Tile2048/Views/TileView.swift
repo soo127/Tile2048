@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct TileView: View {
-
     let value: Int?
 
     var body: some View {
@@ -25,5 +24,4 @@ struct TileView: View {
         }
         .aspectRatio(1, contentMode: .fit)
     }
-
 }

@@ -20,6 +20,7 @@ struct BoardFeature {
         case swiped(Direction)
         case addRandomTile
         case tileAdded(row: Int, col: Int, value: Int)
+        case onAppear
     }
 
     var body: some Reducer<State, Action> {
@@ -41,6 +42,13 @@ struct BoardFeature {
 
             case let .tileAdded(row, col, value):
                 state.board.cells[row][col] = value
+                return .none
+
+            case .onAppear:
+                let empties = BoardLogic.emptyPositions(state.board)
+                if empties.count == state.board.size * state.board.size {
+                    return .send(.addRandomTile)
+                }
                 return .none
             }
         }

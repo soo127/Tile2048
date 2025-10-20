@@ -23,6 +23,9 @@ struct BoardView: View {
                         }
                 )
         }
+        .onAppear {
+            store.send(.onAppear)
+        }
     }
 
     private var scoreBoard: some View {
