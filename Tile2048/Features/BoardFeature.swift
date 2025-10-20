@@ -30,7 +30,10 @@ struct BoardFeature {
                 let result = BoardLogic.move(state.board, direction: direction)
                 state.board = result.board
                 state.score += result.scoreDelta
-                return .send(.addRandomTile)
+                return .run { send in
+                        try await Task.sleep(for: .milliseconds(100))
+                        await send(.addRandomTile)
+                    }
 
             case .addRandomTile:
                 let empties = BoardLogic.emptyPositions(state.board)
