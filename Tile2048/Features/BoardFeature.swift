@@ -21,6 +21,7 @@ struct BoardFeature {
         case addRandomTile
         case tileAdded(row: Int, col: Int, value: Int)
         case onAppear
+        case resetGame
     }
 
     var body: some Reducer<State, Action> {
@@ -53,6 +54,11 @@ struct BoardFeature {
                     return .send(.addRandomTile)
                 }
                 return .none
+
+            case .resetGame:
+                state.board = Board(size: state.board.size)
+                state.score = 0
+                return .send(.addRandomTile)
             }
         }
     }

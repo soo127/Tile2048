@@ -77,7 +77,7 @@ struct BoardView: View {
 
     private var resetButton: some View {
         Button {
-            print("reset")
+            store.send(.resetGame)
         } label: {
             Image(systemName: "arrow.clockwise")
                 .resizable()
