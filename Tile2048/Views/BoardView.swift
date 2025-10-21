@@ -10,6 +10,7 @@ import ComposableArchitecture
 
 struct BoardView: View {
     let store: StoreOf<BoardFeature>
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         VStack(spacing: 15) {
@@ -17,6 +18,7 @@ struct BoardView: View {
             buttons
             board
         }
+        .navigationBarBackButtonHidden(true)
         .onAppear {
             store.send(.onAppear)
         }
@@ -63,7 +65,8 @@ struct BoardView: View {
 
     private var homeButton: some View {
         Button {
-            print("home")
+            store.send(.resetGame)
+            dismiss()
         } label: {
             Image(systemName: "house")
                 .resizable()

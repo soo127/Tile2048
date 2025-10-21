@@ -10,9 +10,12 @@ import ComposableArchitecture
 
 @main
 struct Tile2048App: App {
+    let gameStore = Store(initialState: BoardFeature.State(board: Board(size: 4))) {
+        BoardFeature()
+    }
     var body: some Scene {
         WindowGroup {
-            GameStartView()
+            GameStartView(store: gameStore)
         }
     }
 }

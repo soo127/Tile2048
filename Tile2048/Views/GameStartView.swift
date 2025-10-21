@@ -9,6 +9,8 @@ import SwiftUI
 import ComposableArchitecture
 
 struct GameStartView: View {
+    let store: StoreOf<BoardFeature>
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -46,7 +48,7 @@ struct GameStartView: View {
 
     private var startButton: some View {
         NavigationLink {
-            gameView
+            BoardView(store: store)
         } label: {
             Text("START")
                 .font(.system(size: 20, weight: .semibold))
@@ -58,13 +60,10 @@ struct GameStartView: View {
                 .shadow(color: .black.opacity(0.3), radius: 5, x: 0, y: 4)
         }
     }
-
-    private var gameView: some View {
-        BoardView(
-            store: Store(initialState: BoardFeature.State(board: Board(size: 4))) { BoardFeature()
-            }
-        )
-    }
 }
 
-#Preview { GameStartView() }
+#Preview {
+    GameStartView(store: Store(initialState: .mock) {
+        BoardFeature()
+    })
+}
