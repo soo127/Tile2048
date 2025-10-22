@@ -14,6 +14,7 @@ struct BoardFeature {
     struct State: Equatable {
         var board: Board
         var score: Int = 0
+        var high: Int = 0
     }
 
     enum Action {
@@ -49,6 +50,7 @@ struct BoardFeature {
                 return .none
 
             case .onAppear:
+                state.high = HighScore.load()
                 let empties = BoardLogic.emptyPositions(state.board)
                 if empties.count == state.board.size * state.board.size {
                     return .send(.addRandomTile)
@@ -56,6 +58,8 @@ struct BoardFeature {
                 return .none
 
             case .resetGame:
+                HighScore.updateIfHigher(state.score)
+                state.high = HighScore.load()
                 state.board = Board(size: state.board.size)
                 state.score = 0
                 return .send(.addRandomTile)
@@ -67,6 +71,6 @@ struct BoardFeature {
 extension BoardFeature.State {
     static let mock = BoardFeature.State(
         board: Board(size: 4),
-        score: 1234
+        score: 0
     )
 }
