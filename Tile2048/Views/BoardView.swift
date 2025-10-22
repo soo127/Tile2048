@@ -30,6 +30,7 @@ struct BoardView: View {
             title
             Spacer()
             score
+            best
         }
     }
 
@@ -46,6 +47,22 @@ struct BoardView: View {
                 .foregroundColor(.primary)
 
             Text("\(store.score)")
+                .font(.system(size: 22, weight: .semibold))
+                .foregroundColor(.primary)
+                .minimumScaleFactor(0.5)
+        }
+        .frame(width: 90, height: 60)
+        .background(Color.gray.opacity(0.3))
+        .cornerRadius(8)
+    }
+
+    private var best: some View {
+        VStack(spacing: 4) {
+            Text("BEST")
+                .font(.caption)
+                .foregroundColor(.primary)
+
+            Text("\(store.high)")
                 .font(.system(size: 22, weight: .semibold))
                 .foregroundColor(.primary)
                 .minimumScaleFactor(0.5)
