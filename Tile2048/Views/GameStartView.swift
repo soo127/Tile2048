@@ -9,7 +9,8 @@ import SwiftUI
 import ComposableArchitecture
 
 struct GameStartView: View {
-    let store: StoreOf<BoardFeature>
+    @State private var selectedIdx = 0
+    private let sizes = BoardFeature.Constants.sizes
 
     var body: some View {
         NavigationStack {
@@ -24,6 +25,8 @@ struct GameStartView: View {
         VStack {
             Spacer()
             title
+            Spacer()
+            sizePicker
             Spacer()
             startButton
             Spacer()
@@ -46,9 +49,51 @@ struct GameStartView: View {
             .shadow(color: .black.opacity(0.2), radius: 3, x: 1, y: 2)
     }
 
+    private var sizePicker: some View {
+        HStack {
+            leftArrow
+            Spacer()
+            currentSize
+            Spacer()
+            rightArrow
+        }
+        .padding(.horizontal)
+    }
+
+    private var leftArrow: some View {
+        Button {
+            selectedIdx = (selectedIdx - 1 + sizes.count) % sizes.count
+        } label: {
+            Image(systemName: "arrowtriangle.backward")
+                .resizable()
+                .frame(width: 40, height: 40)
+        }
+    }
+
+    private var currentSize: some View {
+        Text("\(sizes[selectedIdx])x\(sizes[selectedIdx])")
+            .font(.system(size: 40, weight: .bold))
+    }
+
+    private var rightArrow: some View {
+        Button {
+            selectedIdx = (selectedIdx + 1) % sizes.count
+        } label: {
+            Image(systemName: "arrowtriangle.forward")
+                .resizable()
+                .frame(width: 40, height: 40)
+        }
+    }
+
     private var startButton: some View {
         NavigationLink {
-            BoardView(store: store)
+            BoardView(
+                store: Store(
+                    initialState: BoardFeature.State(board: Board(size: sizes[selectedIdx]))
+                ) {
+                    BoardFeature()
+                }
+            )
         } label: {
             Text("START")
                 .font(.system(size: 20, weight: .semibold))
@@ -60,10 +105,4 @@ struct GameStartView: View {
                 .shadow(color: .black.opacity(0.3), radius: 5, x: 0, y: 4)
         }
     }
-}
-
-#Preview {
-    GameStartView(store: Store(initialState: .mock) {
-        BoardFeature()
-    })
 }
