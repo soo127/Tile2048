@@ -33,15 +33,14 @@ struct BoardFeature {
                 state.board = result.board
                 state.score += result.scoreDelta
                 return .run { send in
-                        try await Task.sleep(for: .milliseconds(100))
-                        await send(.addRandomTile)
-                    }
+                    try await Task.sleep(for: .milliseconds(100))
+                    await send(.addRandomTile)
+                }
 
             case .addRandomTile:
                 let empties = BoardLogic.emptyPositions(state.board)
                 guard !empties.isEmpty else { return .none }
-                @Dependency(\.randomClient) var randomClient
-                let index = randomClient.randomIndex(empties.count)
+                let index = Int.random(in: 0..<empties.count)
                 let pos = empties[index]
                 return .send(.tileAdded(row: pos.row, col: pos.col, value: 2))
 
@@ -50,7 +49,7 @@ struct BoardFeature {
                 return .none
 
             case .onAppear:
-                state.high = HighScore.load()
+                state.high = HighScore.load(size: state.board.size)
                 let empties = BoardLogic.emptyPositions(state.board)
                 if empties.count == state.board.size * state.board.size {
                     return .send(.addRandomTile)
@@ -58,8 +57,8 @@ struct BoardFeature {
                 return .none
 
             case .resetGame:
-                HighScore.updateIfHigher(state.score)
-                state.high = HighScore.load()
+                HighScore.updateIfHigher(state.score, size: state.board.size)
+                state.high = HighScore.load(size: state.board.size)
                 state.board = Board(size: state.board.size)
                 state.score = 0
                 return .send(.addRandomTile)
@@ -73,4 +72,10 @@ extension BoardFeature.State {
         board: Board(size: 4),
         score: 0
     )
+}
+
+extension BoardFeature {
+    enum Constants {
+        static let sizes = [4, 5, 6]
+    }
 }
