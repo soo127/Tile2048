@@ -25,6 +25,7 @@ struct BoardView: View {
         .padding(.horizontal)
         .sheet(isPresented: $store.gameOver.sending(\.setGameOver)) {
             gameOverModalView(score: store.score)
+                .presentationDetents([.medium])
         }
     }
 
@@ -38,6 +39,11 @@ struct BoardView: View {
             Text("최종 점수: \(score)")
                 .font(.title2)
                 .foregroundColor(.primary)
+
+            Button("확인") {
+                store.send(.setGameOver(false))
+            }
+            .padding(.top, 20)
         }
         .padding(40)
     }
@@ -144,10 +150,4 @@ struct BoardView: View {
         .background(.gray.opacity(0.3))
         .cornerRadius(8)
     }
-}
-
-#Preview {
-    BoardView(store: Store(initialState: .mock) {
-        BoardFeature()
-    })
 }

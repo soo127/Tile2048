@@ -77,16 +77,9 @@ struct BoardFeature {
     }
 }
 
-extension BoardFeature.State {
-    static let mock = BoardFeature.State(
-        board: Board(size: 4),
-        score: 0
-    )
-}
-
 extension BoardFeature {
     enum Constants {
-        static let sizes = [4, 5, 6]
+        static let sizes = [2, 3, 4, 5, 6]
         static let defaultValue = 2
     }
 }
