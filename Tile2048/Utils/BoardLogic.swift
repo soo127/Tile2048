@@ -18,6 +18,18 @@ enum BoardLogic {
         return positions
     }
 
+    static func canMove(_ board: Board) -> Bool {
+        let directions: [Direction] = [.up, .down, .left, .right]
+
+        for direction in directions {
+            let result = move(board, direction: direction)
+            if result.board != board {
+                return true
+            }
+        }
+        return false
+    }
+
     static func move(_ board: Board, direction: Direction) -> MoveResult {
         var newBoard = board
         var gainedScore = 0

@@ -61,13 +61,7 @@ struct GameStartView: View {
     }
 
     private var leftArrow: some View {
-        Button {
-            selectedIdx = (selectedIdx - 1 + sizes.count) % sizes.count
-        } label: {
-            Image(systemName: "arrowtriangle.backward")
-                .resizable()
-                .frame(width: 40, height: 40)
-        }
+        sizeChangeButton(direction: -1, imageName: "arrowtriangle.backward.fill")
     }
 
     private var currentSize: some View {
@@ -76,10 +70,14 @@ struct GameStartView: View {
     }
 
     private var rightArrow: some View {
+        sizeChangeButton(direction: 1, imageName: "arrowtriangle.forward.fill")
+    }
+
+    private func sizeChangeButton(direction: Int, imageName: String) -> some View {
         Button {
-            selectedIdx = (selectedIdx + 1) % sizes.count
+            selectedIdx = (selectedIdx + direction + sizes.count) % sizes.count
         } label: {
-            Image(systemName: "arrowtriangle.forward")
+            Image(systemName: imageName)
                 .resizable()
                 .frame(width: 40, height: 40)
         }

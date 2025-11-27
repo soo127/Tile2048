@@ -15,6 +15,7 @@ struct BoardFeature {
         var board: Board
         var score: Int = 0
         var high: Int = 0
+        var gameOver: Bool = false
     }
 
     enum Action {
@@ -23,6 +24,7 @@ struct BoardFeature {
         case tileAdded(row: Int, col: Int, value: Int)
         case onAppear
         case resetGame
+        case setGameOver(Bool)
     }
 
     var body: some Reducer<State, Action> {
@@ -39,10 +41,15 @@ struct BoardFeature {
 
             case .addRandomTile:
                 let empties = BoardLogic.emptyPositions(state.board)
-                guard !empties.isEmpty else { return .none }
+                guard !empties.isEmpty else {
+                    if !BoardLogic.canMove(state.board) {
+                        state.gameOver = true
+                    }
+                    return .none
+                }
                 let index = Int.random(in: 0..<empties.count)
                 let pos = empties[index]
-                return .send(.tileAdded(row: pos.row, col: pos.col, value: 2))
+                return .send(.tileAdded(row: pos.row, col: pos.col, value: Constants.defaultValue))
 
             case let .tileAdded(row, col, value):
                 state.board.cells[row][col] = value
@@ -50,18 +57,21 @@ struct BoardFeature {
 
             case .onAppear:
                 state.high = HighScore.load(size: state.board.size)
-                let empties = BoardLogic.emptyPositions(state.board)
-                if empties.count == state.board.size * state.board.size {
-                    return .send(.addRandomTile)
-                }
-                return .none
+                return .send(.addRandomTile)
 
             case .resetGame:
                 HighScore.updateIfHigher(state.score, size: state.board.size)
                 state.high = HighScore.load(size: state.board.size)
                 state.board = Board(size: state.board.size)
                 state.score = 0
-                return .send(.addRandomTile)
+                return .none
+
+            case let .setGameOver(isPresented):
+                state.gameOver = isPresented
+                return .concatenate(
+                    .send(.resetGame),
+                    .send(.addRandomTile)
+                )
             }
         }
     }
@@ -77,5 +87,6 @@ extension BoardFeature.State {
 extension BoardFeature {
     enum Constants {
         static let sizes = [4, 5, 6]
+        static let defaultValue = 2
     }
 }

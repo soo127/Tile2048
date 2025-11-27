@@ -9,7 +9,7 @@ import SwiftUI
 import ComposableArchitecture
 
 struct BoardView: View {
-    let store: StoreOf<BoardFeature>
+    @Bindable var store: StoreOf<BoardFeature>
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -23,6 +23,23 @@ struct BoardView: View {
             store.send(.onAppear)
         }
         .padding(.horizontal)
+        .sheet(isPresented: $store.gameOver.sending(\.setGameOver)) {
+            gameOverModalView(score: store.score)
+        }
+    }
+
+    private func gameOverModalView(score: Int) -> some View {
+        VStack(spacing: 20) {
+            Text("GAME OVER")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .foregroundColor(.red)
+
+            Text("최종 점수: \(score)")
+                .font(.title2)
+                .foregroundColor(.primary)
+        }
+        .padding(40)
     }
 
     private var head: some View {
@@ -41,28 +58,20 @@ struct BoardView: View {
     }
 
     private var score: some View {
-        VStack(spacing: 4) {
-            Text("SCORE")
-                .font(.caption)
-                .foregroundColor(.primary)
-
-            Text("\(store.score)")
-                .font(.system(size: 22, weight: .semibold))
-                .foregroundColor(.primary)
-                .minimumScaleFactor(0.5)
-        }
-        .frame(width: 90, height: 60)
-        .background(Color.gray.opacity(0.3))
-        .cornerRadius(8)
+        scoreBox(title: "SCORE", value: store.score)
     }
 
     private var best: some View {
+        scoreBox(title: "BEST", value: store.high)
+    }
+
+    private func scoreBox(title: String, value: Int) -> some View {
         VStack(spacing: 4) {
-            Text("BEST")
+            Text(title)
                 .font(.caption)
                 .foregroundColor(.primary)
 
-            Text("\(store.high)")
+            Text("\(value)")
                 .font(.system(size: 22, weight: .semibold))
                 .foregroundColor(.primary)
                 .minimumScaleFactor(0.5)
@@ -98,6 +107,7 @@ struct BoardView: View {
     private var resetButton: some View {
         Button {
             store.send(.resetGame)
+            store.send(.addRandomTile)
         } label: {
             Image(systemName: "arrow.clockwise")
                 .resizable()
@@ -124,8 +134,10 @@ struct BoardView: View {
         LazyVGrid(
             columns: Array(repeating: GridItem(.flexible()), count: size)
         ) {
-            ForEach(0..<(size * size), id: \.self) {
-                TileView(value: store.board.cells[$0 / size][$0 % size])
+            ForEach(0..<(size * size), id: \.self) { index in
+                let row = index / size
+                let col = index % size
+                TileView(value: store.board.cells[row][col])
             }
         }
         .padding(8)
